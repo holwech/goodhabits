@@ -6,6 +6,10 @@ enum PermissionAccess {
 }
 
 export default class Notify {
+  constructor(private icon: string) {
+    
+  }
+
   public async requestPermission(): Promise<boolean> {
     let permission = this.checkPermission();
     if (permission == PermissionAccess.NOT_SUPPORTED) {
@@ -17,7 +21,7 @@ export default class Notify {
       return false;
     } else {
       let permission = await Notification.requestPermission();
-      if (permission === "granted") {
+      if (permission === 'granted') {
         return true;
       }
     }
@@ -25,27 +29,25 @@ export default class Notify {
   }
 
   public checkPermission() {
-    if (!("Notification" in window)) {
+    if (!('Notification' in window)) {
       return PermissionAccess.NOT_SUPPORTED;
     }
-    else if (Notification.permission === "granted") {
+    else if (Notification.permission === 'granted') {
       return PermissionAccess.GRANTED;
     }
-    else if (Notification.permission !== "denied") {
+    else if (Notification.permission !== 'denied') {
       return PermissionAccess.NOT_GRANTED;
     }
     return PermissionAccess.DENIED;
   }
 
-  public notify_delay(message: string, delay: number) {
-    console.log("hello")
-    let callback = () => {
-      this.notify(message);
+  public notify(title: string, body: string, timeout?: number) {
+    let notification = new Notification(title, {
+      icon: this.icon,
+      body,
+    });
+    if (timeout) {
+      setTimeout(() => notification.close(), timeout)
     }
-    setTimeout(callback, delay);
-  }
-
-  public notify(message: string) {
-    new Notification(message);
   }
 }

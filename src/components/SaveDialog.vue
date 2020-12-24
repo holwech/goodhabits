@@ -145,14 +145,14 @@ const verifyUrl = function (url: string) {
     return false;
   }
   if (isYoutube(url) && getYoutubeId(url) === null) {
-    return false
+    return false;
   }
-  return true
-}
+  return true;
+};
 
 const isYoutube = function(url: string) {
-  return url.includes("youtu");
-}
+  return url.includes('youtu');
+};
 
 const validURL = function (url: string) {
   var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
@@ -162,7 +162,7 @@ const validURL = function (url: string) {
     '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
     '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
   return !!pattern.test(url);
-}
+};
 
 const getYoutubeId = function (url: string) {
   const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
@@ -172,5 +172,5 @@ const getYoutubeId = function (url: string) {
   return (match && match[2].length === 11)
     ? match[2]
     : null;
-}
+};
 </script>

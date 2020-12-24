@@ -9,7 +9,7 @@
         style="color:white"
         :to="{ name: 'MainMenu' }"
       >
-        incrementally
+        Good Habits
       </router-link>
       <sup>
         <span

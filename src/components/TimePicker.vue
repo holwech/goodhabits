@@ -1,0 +1,149 @@
+<template>
+  <div id="timepicker-container">
+    Start at
+    <div class="timepicker-input-wrapper">
+      <input
+        v-model="startHour"
+        class="timepicker-input"
+        type="text"
+        pattern="\d*"
+        maxlength="2"
+        name="Hour"
+        min="0"
+        max="23"
+        size="1"
+      >:
+      <input
+        v-model="startMin"
+        class="timepicker-input"
+        type="text"
+        pattern="\d*"
+        maxlength="2"
+        name="Minute"
+        min="0"
+        max="59"
+        size="1"
+      >
+    </div>
+    Remind me to take a long break every
+    <div class="timepicker-input-wrapper">
+      <input
+        v-model="longBreak"
+        class="timepicker-input"
+        type="number"
+        name="Minute"
+        min="0"
+        max="59"
+        size="1"
+        value="45"
+      > minutes
+    </div>
+    Remind me to take a short break every
+    <div class="timepicker-input-wrapper">
+      <input
+        v-model="shortBreak"
+        class="timepicker-input"
+        type="number"
+        name="Minute"
+        min="0"
+        max="59"
+        size="1"
+        value="10"
+      > minutes
+    </div>
+    End at
+    <div class="timepicker-input-wrapper">
+      <input
+        v-model="endHour"
+        class="timepicker-input"
+        type="text"
+        pattern="\d*"
+        maxlength="2"
+        name="Hour"
+        min="0"
+        max="23"
+        size="1"
+      >:
+      <input
+        v-model="endMin"
+        class="timepicker-input"
+        type="text"
+        pattern="\d*"
+        maxlength="2"
+        name="Minute"
+        min="0"
+        max="59"
+        size="1"
+      >
+    </div>
+  </div>
+</template>
+
+<script lang="ts">
+import { computed, defineComponent, reactive, ref, watch } from '@vue/composition-api';
+
+export default defineComponent({
+  name: 'TimePicker',
+  setup(props, { emit }) {
+    let startHour = ref("08");
+    let startMin = ref("00");
+    let endHour = ref("17");
+    let endMin = ref("00");
+    let longBreak = ref("45");
+    let shortBreak = ref("10");
+
+    emit("input", [
+      startHour,
+      startMin,
+      endHour,
+      endMin,
+      longBreak,
+      shortBreak
+    ]);
+
+    let test = watch([startHour, startMin, endHour, endMin, longBreak, shortBreak], (curr, prev) => {
+      emit("input", curr);
+    });
+
+    return {
+      startHour,
+      startMin,
+      endHour,
+      endMin,
+      longBreak,
+      shortBreak
+    }
+  }
+});
+</script>
+
+<style lang="scss">
+#timepicker-container {
+  padding: 10px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.timepicker-input {
+  border: 0px;
+  font-size: 20px;
+}
+
+.timepicker-input-wrapper {
+  border: 2px solid rgb(24, 24, 24);
+  border-radius: 5px;
+  margin: 20px auto;
+  padding: 10px 0px;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+</style>
