@@ -9,7 +9,7 @@
         style="color:white"
         :to="{ name: 'MainMenu' }"
       >
-        Good Habits
+        Habit Bird
       </router-link>
       <sup>
         <span

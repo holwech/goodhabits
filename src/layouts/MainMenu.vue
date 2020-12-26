@@ -4,13 +4,6 @@
     class="wave-top"
   >
     <Toolbar>
-      <b-button @click="notify.requestPermission()">
-        Request
-      </b-button>
-      <b-button @click="notify.notify_delay('hello', 3)">
-        Notify
-      </b-button>
-      <LoginButton />
     </Toolbar>
     <b-container id="main-container">
       <b-row>
@@ -19,7 +12,7 @@
           class="splash-text"
         >
           <h1 class="text-center">
-            Good Habits
+            Habit Bird
           </h1>
         </b-col>
       </b-row>
@@ -80,8 +73,8 @@ export default defineComponent({
       console.log(limits);
       let [startHour, startMin, endHour, endMin, longBreak, shortBreak] = limits.map((val) => parseInt(val.value));
       timer.setLimitTime(startHour, startMin, endHour, endMin);
-      let shortBreakTime = shortBreak * 1000;
-      let longBreakTime = longBreak * 1000;
+      let shortBreakTime = shortBreak * 60 * 1000;
+      let longBreakTime = longBreak * 60 * 1000;
       timer.stopAllIntervals();
       timer.startInterval(shortBreakTime, () => {
         clearInterval(shortTimerCountdownId);
