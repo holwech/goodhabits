@@ -113,7 +113,7 @@ export default defineComponent({
         shortTimerCountdown.value = shortBreakTime;
         shortTimerCountdownId = countdownInterval(shortTimerCountdown);
         playSound()
-        notify.notify("Time for a short break", "Take a few seconds look away from the screen and shake your legs", 15000)
+        notify.notify("Time for a short break", "Take a few seconds to look away from the screen and shake your legs", 15000)
       });
       timer.startInterval(longBreakTime, () => {
         clearInterval(longTimerCountdownId);
