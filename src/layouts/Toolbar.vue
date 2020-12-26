@@ -2,7 +2,7 @@
   <b-navbar
     toggleable="lg"
     type="dark"
-    variant="primary"
+    color="#ff9a0d"
   >
     <b-navbar-brand href="#">
       <router-link

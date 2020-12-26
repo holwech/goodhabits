@@ -1,5 +1,5 @@
 <template>
-  <div id="timepicker-container">
+  <div class="timepicker-container">
     Start at
     <div class="timepicker-input-wrapper">
       <input
@@ -93,12 +93,12 @@ export default defineComponent({
     let shortBreak = ref("10");
 
     emit("input", [
-      startHour,
-      startMin,
-      endHour,
-      endMin,
-      longBreak,
-      shortBreak
+      startHour.value,
+      startMin.value,
+      endHour.value,
+      endMin.value,
+      longBreak.value,
+      shortBreak.value
     ]);
 
     let test = watch([startHour, startMin, endHour, endMin, longBreak, shortBreak], (curr, prev) => {
@@ -118,7 +118,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-#timepicker-container {
+.timepicker-container {
   padding: 10px;
   margin: 0 auto;
   text-align: center;
@@ -127,6 +127,7 @@ export default defineComponent({
 .timepicker-input {
   border: 0px;
   font-size: 20px;
+  text-align: center;
 }
 
 .timepicker-input-wrapper {

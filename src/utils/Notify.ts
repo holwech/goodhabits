@@ -1,4 +1,4 @@
-enum PermissionAccess {
+export enum PermissionAccess {
   NOT_SUPPORTED,
   GRANTED,
   NOT_GRANTED,

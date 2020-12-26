@@ -12,8 +12,17 @@
           class="splash-text"
         >
           <h1 class="text-center">
-            Habit Bird
+            Habit Bird 
+            <!-- <img src="@/assets/logo.png" width="180" height="180" /> -->
           </h1>
+        </b-col>
+      </b-row>
+      <b-row align-h="center" v-if="notify.checkPermission() == 2">
+        <b-col
+          cols="4"
+          style="text-align: center;"
+        >
+          <b-button @click="notify.requestPermission()" variant="success">Enable notifications</b-button>
         </b-col>
       </b-row>
       <b-row align-h="center">
@@ -27,8 +36,25 @@
         <b-col
           cols="4"
         >
-          Seconds to long break: {{longTimerCountdown / 1000}} <br />
-          Seconds to short break: {{shortTimerCountdown / 1000}}
+          <hr />
+          <div class="timepicker-container">
+            Seconds to long break
+            <div class="timepicker-input-wrapper">
+              <input
+                class="timepicker-input"
+                type="text"
+                :value="longTimerCountdown / 1000"
+              >
+            </div>
+            Seconds to short break
+            <div class="timepicker-input-wrapper">
+              <input
+                class="timepicker-input"
+                type="text"
+                :value="shortTimerCountdown / 1000"
+              >
+            </div>
+          </div>
         </b-col>
       </b-row>
     </b-container>
@@ -36,7 +62,7 @@
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 1440 320"
     ><path
-      fill="#007bff"
+      fill="#ff9a0d"
       fill-opacity="1"
       d="M0,224L60,234.7C120,245,240,267,360,256C480,245,600,203,720,208C840,213,960,267,1080,288C1200,309,1320,299,1380,293.3L1440,288L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z"
     /></svg>
@@ -47,11 +73,12 @@
 import LoginButton from '@/components/LoginButton.vue';
 import Toolbar from '@/layouts/Toolbar.vue';
 import { defineComponent, Ref, ref, watch } from '@vue/composition-api';
-import Notify from '@/utils/Notify';
+import Notify, { PermissionAccess } from '@/utils/Notify';
 import TimePicker from '@/components/TimePicker.vue';
 import Timer from '@/utils/Timer';
 import { chickResponses } from '@/models/Resource';
 import { countdownInterval } from '@/utils/utils';
+const notificationSound = require("../assets/notification-sound.mp3");
 
 export default defineComponent({
   name: 'MainMenu',
@@ -69,9 +96,14 @@ export default defineComponent({
     let longTimerCountdownId = 0;
     let shortTimerCountdownId = 0;
 
-    let updateLimits = (limits: Ref<string>[]) => {
-      console.log(limits);
-      let [startHour, startMin, endHour, endMin, longBreak, shortBreak] = limits.map((val) => parseInt(val.value));
+    let playSound = () => {
+      console.log("yo")
+      let audio = new Audio(notificationSound);
+      audio.play();
+    }
+
+    let updateLimits = (limits: string[]) => {
+      let [startHour, startMin, endHour, endMin, longBreak, shortBreak] = limits.map((val) => parseInt(val));
       timer.setLimitTime(startHour, startMin, endHour, endMin);
       let shortBreakTime = shortBreak * 60 * 1000;
       let longBreakTime = longBreak * 60 * 1000;
@@ -80,13 +112,15 @@ export default defineComponent({
         clearInterval(shortTimerCountdownId);
         shortTimerCountdown.value = shortBreakTime;
         shortTimerCountdownId = countdownInterval(shortTimerCountdown);
-        notify.notify("Time for a short break", "Take a few seconds look away from the screen and shake your legs", 5000)
+        playSound()
+        notify.notify("Time for a short break", "Take a few seconds look away from the screen and shake your legs", 15000)
       });
       timer.startInterval(longBreakTime, () => {
         clearInterval(longTimerCountdownId);
         longTimerCountdown.value = longBreakTime;
         longTimerCountdownId = countdownInterval(longTimerCountdown);
-        notify.notify("Time for a long break", chickResponses[Math.floor(Math.random() * chickResponses.length)], 10000)
+        playSound()
+        notify.notify("Time for a long break", chickResponses[Math.floor(Math.random() * chickResponses.length)], 30000)
       });
       clearInterval(shortTimerCountdownId);
       clearInterval(longTimerCountdownId);
@@ -101,7 +135,8 @@ export default defineComponent({
       updateLimits,
       timer,
       shortTimerCountdown,
-      longTimerCountdown
+      longTimerCountdown,
+      playSound,
     };
   }
 });
@@ -110,5 +145,12 @@ export default defineComponent({
 <style lang="scss">
 .board-button {
   margin-left: 5px;
+}
+
+.countdown {
+  border: 2px solid rgb(24, 24, 24);
+  border-radius: 5px;
+  margin: 20px auto;
+  padding: 10px 0px;
 }
 </style>
