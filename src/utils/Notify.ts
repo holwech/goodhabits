@@ -47,7 +47,7 @@ export default class Notify {
       body,
     });
     if (timeout) {
-      setTimeout(() => notification.close(), timeout)
+      setTimeout(() => notification.close(), timeout);
     }
   }
 }

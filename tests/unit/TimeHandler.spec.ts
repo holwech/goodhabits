@@ -7,7 +7,7 @@ describe('IntervalController', () => {
   it('can be created', () => {
     const timeHandler = new TimeHandler(
       1,
-      () => console.log('triggered'),
+      () => undefined,
       false
     );
     expect(timeHandler).toBeDefined();

@@ -85,14 +85,14 @@ import { computed, defineComponent, reactive, ref, watch } from '@vue/compositio
 export default defineComponent({
   name: 'TimePicker',
   setup(props, { emit }) {
-    let startHour = ref("08");
-    let startMin = ref("00");
-    let endHour = ref("17");
-    let endMin = ref("00");
-    let longBreak = ref("45");
-    let shortBreak = ref("10");
+    let startHour = ref('08');
+    let startMin = ref('00');
+    let endHour = ref('17');
+    let endMin = ref('00');
+    let longBreak = ref('45');
+    let shortBreak = ref('10');
 
-    emit("input", [
+    emit('input', [
       startHour.value,
       startMin.value,
       endHour.value,
@@ -102,7 +102,7 @@ export default defineComponent({
     ]);
 
     let test = watch([startHour, startMin, endHour, endMin, longBreak, shortBreak], (curr, prev) => {
-      emit("input", curr);
+      emit('input', curr);
     });
 
     return {
@@ -112,30 +112,12 @@ export default defineComponent({
       endMin,
       longBreak,
       shortBreak
-    }
+    };
   }
 });
 </script>
 
 <style lang="scss">
-.timepicker-container {
-  padding: 10px;
-  margin: 0 auto;
-  text-align: center;
-}
-
-.timepicker-input {
-  border: 0px;
-  font-size: 20px;
-  text-align: center;
-}
-
-.timepicker-input-wrapper {
-  border: 2px solid rgb(24, 24, 24);
-  border-radius: 5px;
-  margin: 20px auto;
-  padding: 10px 0px;
-}
 
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {

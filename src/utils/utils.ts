@@ -1,4 +1,4 @@
-import { Ref } from "@vue/composition-api"
+import { Ref } from '@vue/composition-api';
 
 export const countdownInterval = (count: Ref<number>, interval: number=1000) => {
   let id = setInterval(() => {
@@ -8,4 +8,4 @@ export const countdownInterval = (count: Ref<number>, interval: number=1000) => 
     }
   }, interval);
   return id;
-}
+};

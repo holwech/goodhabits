@@ -24,7 +24,6 @@ describe('IntervalController', () => {
       1,
       1,
       (signal: IntervalSignal) => {
-        console.log(signal);
         events.push(signal);
       }
     );
@@ -52,7 +51,6 @@ describe('IntervalController', () => {
       1,
       1,
       (signal: IntervalSignal) => {
-        console.log(signal);
         events.push(signal);
       }
     );

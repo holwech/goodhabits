@@ -71,3 +71,43 @@ $border-radius: 3px;
   margin-bottom: 0px;
   padding-bottom: 20px;
 }
+
+// Time picker
+
+.timepicker-container {
+  padding: 10px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.timepicker-input {
+  border: 0px;
+  font-size: 20px;
+  text-align: center;
+}
+
+.timepicker-input:disabled,
+.timepicker-input[disabled]{
+  background-color: #ffffff;
+  color: inherit;
+}
+
+.timepicker-input {
+  border: 0px;
+  font-size: 20px;
+  text-align: center;
+}
+
+.timepicker-input-wrapper {
+  border: 2px solid rgb(24, 24, 24);
+  border-radius: 5px;
+  margin: 20px auto;
+  padding: 10px 0px;
+}
+
+.timepicker-input-wrapper {
+  border: 2px solid rgb(24, 24, 24);
+  border-radius: 5px;
+  margin: 20px auto;
+  padding: 10px 0px;
+}
