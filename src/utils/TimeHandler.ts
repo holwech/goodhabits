@@ -23,7 +23,7 @@ export class TimeHandler {
     this.id = setTimeout(this.timeout.bind(this), this.duration);
     if (this.timeCounterCallback) {
       this.timeCounterIntervalId = setInterval(
-        () => { this.timeCounterCallback!((this.duration - (Date.now() - this.timeoutStartTime)) / 60000); },
+        () => { this.timeCounterCallback!(this.duration - (Date.now() - this.timeoutStartTime)); },
         1000
       );
     }
@@ -64,10 +64,14 @@ export class TimeHandler {
     this.timeCounterCallback = callback;
     if (this.id) {
       this.timeCounterIntervalId = setInterval(
-        () => { this.timeCounterCallback!((this.duration - (Date.now() - this.timeoutStartTime)) / 60000); },
+        () => { this.timeCounterCallback!(this.duration - (Date.now() - this.timeoutStartTime)); },
         1000
       );
     }
+  }
+
+  public isRunning() {
+    return this.id !== undefined;
   }
 
   private checkLimits() {
@@ -84,6 +88,7 @@ export class TimeHandler {
   }
 
   private timeout() {
+    this.stop()
     if (this.checkLimits() && this.callback) {
       this.callback();
     }
@@ -91,5 +96,4 @@ export class TimeHandler {
       this.start();
     }
   }
-
 }
