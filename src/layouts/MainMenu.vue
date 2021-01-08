@@ -147,7 +147,7 @@ const defaultTimes = {
     endMin: 0
   },
   shortIntervalDuration: 15 * 60 * 1000,
-  longIntervalDuration: 60 * 60 * 1000,
+  longIntervalDuration:  10000, //60 * 60 * 1000,
   longBreakDuration: 10 * 60 * 1000,
   breakReminderDuration: 2 * 60 * 1000,
 };
@@ -174,7 +174,7 @@ export default defineComponent({
           notify.notify('Time for a short break', 'Take a few seconds to look away from the screen and shake your legs', 0.5 * 60 * 1000);
           break;
         case IntervalSignal.LONG_INTERVAL_END:
-          notify.notify('Time for a long break', 'Click on the \"Start break\" button to start your break', 0.5 * 60 * 1000);
+          // notify.notify('Time for a long break', 'Click on the \"Start break\" button to start your break', 0.5 * 60 * 1000);
           showBreakButton.value = true;
           break;
         case IntervalSignal.BREAK_NO_ACK:
@@ -229,8 +229,8 @@ export default defineComponent({
     let updateLimits = (limits: string[]) => {
       let [startHour, startMin, endHour, endMin, longBreak, shortBreak] = limits.map((val) => parseInt(val));
       intervalController.setLimitTime({ startHour, startMin, endHour, endMin });
-      intervalController.shortIntervalHandler.setDuration(shortBreak * 60 * 1000);
-      intervalController.longIntervalHandler.setDuration(longBreak * 60 * 1000);
+      // intervalController.shortIntervalHandler.setDuration(shortBreak * 60 * 1000);
+      // intervalController.longIntervalHandler.setDuration(longBreak * 60 * 1000);
     };
 
     return {

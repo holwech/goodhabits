@@ -60,6 +60,7 @@
         min="0"
         size="1"
         value="45"
+        disabled
       > minutes
     </div>
     Remind me to take a short break every
@@ -72,6 +73,7 @@
         min="0"
         size="1"
         value="10"
+        disabled
       > minutes
     </div>
   </div>
