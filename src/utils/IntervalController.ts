@@ -72,10 +72,15 @@ export default class IntervalController {
   }
 
   public startBreak() {
-    this.ackBreak = true;
+    if (this.breakAckTimer.isRunning()) {
+      this.ackBreak = true;
+      this.breakAckTimer.stop();
+      this.breakHandler();
+    }
   }
 
   private longIntervalTimeout() {
+    console.log("long break")
     this.shortIntervalHandler.stop();
     this.callback(IntervalSignal.LONG_INTERVAL_END);
     this.breakHandler();
