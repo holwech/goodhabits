@@ -11,7 +11,7 @@
           class="splash-text"
         >
           <h1 class="text-center">
-            Habit Bird 
+            Better habits 
             <!-- <img src="@/assets/logo.png" width="180" height="180" /> -->
           </h1>
         </b-col>
@@ -32,6 +32,22 @@
           </b-button>
         </b-col>
       </b-row>
+      <b-row
+        v-if="showBreakButton"
+        align-h="center"
+      >
+        <b-col
+          cols="4"
+          style="text-align: center;"
+        >
+          <b-button
+            variant="success"
+            @click="startBreak"
+          >
+            Start break
+          </b-button>
+        </b-col>
+      </b-row>
       <b-row align-h="center">
         <b-col
           cols="4"
@@ -45,22 +61,55 @@
         >
           <hr>
           <div class="timepicker-container">
-            Seconds to long break
+            Time until next long break
             <div class="timepicker-input-wrapper">
               <input
                 class="timepicker-input"
                 type="text"
-                :value="longTimerCountdown / 1000"
+                :value="Math.floor(longTimerCountdown / 60000)"
                 disabled
+                size="2"
+              > :
+              <input
+                class="timepicker-input"
+                type="text"
+                :value="Math.floor(longTimerCountdown / 1000) % 60"
+                disabled
+                size="2"
               >
             </div>
-            Seconds to short break
+            Time until next short break
             <div class="timepicker-input-wrapper">
               <input
                 class="timepicker-input"
                 type="text"
-                :value="shortTimerCountdown / 1000"
+                :value="Math.floor(shortTimerCountdown / 60000)"
                 disabled
+                size="2"
+              > :
+              <input
+                class="timepicker-input"
+                type="text"
+                :value="Math.floor(shortTimerCountdown / 1000) % 60"
+                disabled
+                size="2"
+              >
+            </div>
+            Remaining long break time
+            <div class="timepicker-input-wrapper">
+              <input
+                class="timepicker-input"
+                type="text"
+                :value="Math.floor(breakTimerCountdown / 60000)"
+                disabled
+                size="2"
+              > :
+              <input
+                class="timepicker-input"
+                type="text"
+                :value="Math.floor(breakTimerCountdown / 1000) % 60"
+                disabled
+                size="2"
               >
             </div>
           </div>
@@ -81,7 +130,7 @@
 <script lang="ts">
 import LoginButton from '@/components/LoginButton.vue';
 import Toolbar from '@/layouts/Toolbar.vue';
-import { defineComponent, Ref, ref, watch } from '@vue/composition-api';
+import { defineComponent, onMounted, Ref, ref, watch } from '@vue/composition-api';
 import Notify, { PermissionAccess } from '@/utils/Notify';
 import TimePicker from '@/components/TimePicker.vue';
 import { chickResponses } from '@/models/Resource';
@@ -115,17 +164,21 @@ export default defineComponent({
     let notify = new Notify(icon);
     let longTimerCountdown = ref(0);
     let shortTimerCountdown = ref(0);
+    let breakTimerCountdown = ref(0);
+    let showBreakButton = ref(false);
 
     let onSignal = (signal: IntervalSignal) => {
+      console.log(signal)
       switch (signal) {
         case IntervalSignal.SHORT_INTERVAL_END:
           notify.notify('Time for a short break', 'Take a few seconds to look away from the screen and shake your legs', 0.5 * 60 * 1000);
           break;
         case IntervalSignal.LONG_INTERVAL_END:
-          notify.notify('Time for a long break', chickResponses[Math.floor(Math.random() * chickResponses.length)], 0.5 * 60 * 1000);
+          notify.notify('Time for a long break', 'Click on the \"Start break\" button to start your break', 0.5 * 60 * 1000);
+          showBreakButton.value = true;
           break;
         case IntervalSignal.BREAK_NO_ACK:
-          notify.notify('Time for a long break', 'Click on the notification to start your break', 0.5 * 60 * 1000);
+          notify.notify('Time for a long break', 'Click on the \"Start break\" button to start your break', 0.5 * 60 * 1000);
           break;
         case IntervalSignal.BREAK_NO_ACK_LIMIT_REACHED:
           notify.notify('Skipping long break', 'You seem to be busy, I will skip this break for now', 1 * 60 * 1000);
@@ -157,21 +210,27 @@ export default defineComponent({
       onSignal
     );
 
-    intervalController.shortIntervalHandler.attachTimeCounter((remainingTime) => shortTimerCountdown);
-    intervalController.longIntervalHandler.attachTimeCounter((remainingTime) => longTimerCountdown);
+    intervalController.shortIntervalHandler.attachTimeCounter((remainingTime) => shortTimerCountdown.value = remainingTime);
+    intervalController.longIntervalHandler.attachTimeCounter((remainingTime) => longTimerCountdown.value = remainingTime);
+    intervalController.breakTimer.attachTimeCounter((remainingTime) => breakTimerCountdown.value = remainingTime);
 
-    intervalController.start();
+    onMounted(() => intervalController.start());
 
     let playSound = () => {
       let audio = new Audio(notificationSound);
       audio.play();
     };
 
+    let startBreak = () => {
+      showBreakButton.value = false;
+      intervalController.startBreak();
+    }
+
     let updateLimits = (limits: string[]) => {
       let [startHour, startMin, endHour, endMin, longBreak, shortBreak] = limits.map((val) => parseInt(val));
       intervalController.setLimitTime({ startHour, startMin, endHour, endMin });
-      intervalController.shortIntervalHandler.setDuration(shortBreak);
-      intervalController.longIntervalHandler.setDuration(longBreak);
+      intervalController.shortIntervalHandler.setDuration(shortBreak * 60 * 1000);
+      intervalController.longIntervalHandler.setDuration(longBreak * 60 * 1000);
     };
 
     return {
@@ -179,7 +238,10 @@ export default defineComponent({
       updateLimits,
       shortTimerCountdown,
       longTimerCountdown,
+      breakTimerCountdown,
       playSound,
+      showBreakButton,
+      startBreak
     };
   }
 });

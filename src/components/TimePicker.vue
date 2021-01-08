@@ -1,6 +1,6 @@
 <template>
   <div class="timepicker-container">
-    Start at
+    Working hours start at
     <div class="timepicker-input-wrapper">
       <input
         v-model="startHour"
@@ -25,33 +25,7 @@
         size="1"
       >
     </div>
-    Remind me to take a long break every
-    <div class="timepicker-input-wrapper">
-      <input
-        v-model="longBreak"
-        class="timepicker-input"
-        type="number"
-        name="Minute"
-        min="0"
-        max="59"
-        size="1"
-        value="45"
-      > minutes
-    </div>
-    Remind me to take a short break every
-    <div class="timepicker-input-wrapper">
-      <input
-        v-model="shortBreak"
-        class="timepicker-input"
-        type="number"
-        name="Minute"
-        min="0"
-        max="59"
-        size="1"
-        value="10"
-      > minutes
-    </div>
-    End at
+    Working hours end at
     <div class="timepicker-input-wrapper">
       <input
         v-model="endHour"
@@ -76,6 +50,30 @@
         size="1"
       >
     </div>
+    Remind me to take a long break every
+    <div class="timepicker-input-wrapper">
+      <input
+        v-model="longBreak"
+        class="timepicker-input"
+        type="number"
+        name="Minute"
+        min="0"
+        size="1"
+        value="45"
+      > minutes
+    </div>
+    Remind me to take a short break every
+    <div class="timepicker-input-wrapper">
+      <input
+        v-model="shortBreak"
+        class="timepicker-input"
+        type="number"
+        name="Minute"
+        min="0"
+        size="1"
+        value="10"
+      > minutes
+    </div>
   </div>
 </template>
 
@@ -89,8 +87,8 @@ export default defineComponent({
     let startMin = ref('00');
     let endHour = ref('17');
     let endMin = ref('00');
-    let longBreak = ref('45');
-    let shortBreak = ref('10');
+    let longBreak = ref('60');
+    let shortBreak = ref('15');
 
     emit('input', [
       startHour.value,

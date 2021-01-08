@@ -5,18 +5,11 @@
     color="#ff9a0d"
   >
     <b-navbar-brand href="#">
-      <router-link
+      <span
         style="color:white"
-        :to="{ name: 'MainMenu' }"
       >
         Habit Bird
-      </router-link>
-      <sup>
-        <span
-          style="color:yellow"
-          @click="betaText"
-        >beta</span>
-      </sup>
+      </span>
     </b-navbar-brand>
 
     <b-navbar-toggle target="nav-collapse" />
