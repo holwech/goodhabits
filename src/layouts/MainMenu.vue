@@ -147,7 +147,7 @@ const defaultTimes = {
     endMin: 0
   },
   shortIntervalDuration: 15 * 60 * 1000,
-  longIntervalDuration:  10000, //60 * 60 * 1000,
+  longIntervalDuration:  60 * 60 * 1000,
   longBreakDuration: 10 * 60 * 1000,
   breakReminderDuration: 2 * 60 * 1000,
 };
