@@ -88,7 +88,7 @@ export class TimeHandler {
   }
 
   private timeout() {
-    this.stop()
+    this.stop();
     if (this.checkLimits() && this.callback) {
       this.callback();
     }
