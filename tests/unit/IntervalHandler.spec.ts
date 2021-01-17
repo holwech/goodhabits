@@ -39,8 +39,32 @@ describe('IntervalController', () => {
     expect(events[5]).toBe(IntervalSignal.BREAK_NO_ACK);
     expect(events[6]).toBe(IntervalSignal.BREAK_NO_ACK);
     expect(events[7]).toBe(IntervalSignal.BREAK_NO_ACK_LIMIT_REACHED);
-    expect(events[0]).toBe(IntervalSignal.SHORT_INTERVAL_END);
-    expect(events[1]).toBe(IntervalSignal.LONG_INTERVAL_END);
+  });
+
+  it('should reset long time when duration is changed', async () => {
+    let events: IntervalSignal[] = [];
+    const controller = new IntervalController(
+      100000,
+      100000,
+      1,
+      1,
+      (signal: IntervalSignal) => {
+        events.push(signal);
+      }
+    );
+    controller.setLimitTime(undefined);
+    controller.longIntervalHandler.setDuration(50)
+    controller.start();
+    jest.advanceTimersByTime(150);
+
+    expect(events[0]).toBe(IntervalSignal.LONG_INTERVAL_END);
+    expect(events[1]).toBe(IntervalSignal.BREAK_NO_ACK);
+    expect(events[2]).toBe(IntervalSignal.BREAK_NO_ACK);
+    expect(events[3]).toBe(IntervalSignal.BREAK_NO_ACK);
+    expect(events[4]).toBe(IntervalSignal.BREAK_NO_ACK);
+    expect(events[5]).toBe(IntervalSignal.BREAK_NO_ACK);
+    expect(events[6]).toBe(IntervalSignal.BREAK_NO_ACK_LIMIT_REACHED);
+    expect(events[7]).toBe(IntervalSignal.LONG_INTERVAL_END);
   });
 
   it('should break when ack break received', async () => {

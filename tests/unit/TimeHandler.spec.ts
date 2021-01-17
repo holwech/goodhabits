@@ -3,7 +3,7 @@ import MockDate from 'mockdate';
 
 jest.useFakeTimers();
 
-describe('IntervalController', () => {
+describe('TimeHandler', () => {
   it('can be created', () => {
     const timeHandler = new TimeHandler(
       1,
@@ -123,4 +123,18 @@ describe('IntervalController', () => {
 
     expect(count).toBe(2);
   });
+
+  // it('attached time should stop at timeout', () => {
+  //   let remainingTime = 0;
+  //   const timeHandler = new TimeHandler(
+  //     10000,
+  //     () => {},
+  //     false
+  //   );
+  //   timeHandler.attachTimeCounter((time) => remainingTime = time);
+  //   timeHandler.start();
+  //   jest.advanceTimersByTime(10000);
+
+  //   expect(remainingTime).toBe(0);
+  // })
 });
