@@ -167,21 +167,30 @@ export default defineComponent({
     let breakTimerCountdown = ref(0);
     let showBreakButton = ref(false);
 
+    let playSound = () => {
+      let audio = new Audio(notificationSound);
+      audio.play();
+    };
+
     let onSignal = (signal: IntervalSignal) => {
       console.log(signal)
       switch (signal) {
         case IntervalSignal.SHORT_INTERVAL_END:
           notify.notify('Time for a short break', 'Take a few seconds to look away from the screen and shake your legs', 0.5 * 60 * 1000);
+          playSound();
           break;
         case IntervalSignal.LONG_INTERVAL_END:
-          // notify.notify('Time for a long break', 'Click on the \"Start break\" button to start your break', 0.5 * 60 * 1000);
+          notify.notify('Time for a long break', 'Click on the \"Start break\" button to start your break', 0.5 * 60 * 1000);
           showBreakButton.value = true;
+          playSound();
           break;
         case IntervalSignal.BREAK_NO_ACK:
           notify.notify('Time for a long break', 'Click on the \"Start break\" button to start your break', 0.5 * 60 * 1000);
+          playSound();
           break;
         case IntervalSignal.BREAK_NO_ACK_LIMIT_REACHED:
           notify.notify('Skipping long break', 'You seem to be busy, I will skip this break for now', 1 * 60 * 1000);
+          playSound();
           break;
         case IntervalSignal.BREAK_START:
           notify.notify(
@@ -189,6 +198,7 @@ export default defineComponent({
             `Your break has started and will last for ${defaultTimes.longBreakDuration / 60000} minutes`,
             1 * 60 * 1000
           );
+          playSound();
           break;
         case IntervalSignal.BREAK_END:
           notify.notify(
@@ -196,6 +206,7 @@ export default defineComponent({
             'Time to get back to work',
             1 * 60 * 1000
           );
+          playSound();
           break;
         default:
           break;
@@ -216,11 +227,6 @@ export default defineComponent({
 
     onMounted(() => intervalController.start());
 
-    let playSound = () => {
-      let audio = new Audio(notificationSound);
-      audio.play();
-    };
-
     let startBreak = () => {
       showBreakButton.value = false;
       intervalController.startBreak();
@@ -229,8 +235,8 @@ export default defineComponent({
     let updateLimits = (limits: string[]) => {
       let [startHour, startMin, endHour, endMin, longBreak, shortBreak] = limits.map((val) => parseInt(val));
       intervalController.setLimitTime({ startHour, startMin, endHour, endMin });
-      // intervalController.shortIntervalHandler.setDuration(shortBreak * 60 * 1000);
-      // intervalController.longIntervalHandler.setDuration(longBreak * 60 * 1000);
+      intervalController.shortIntervalHandler.setDuration(shortBreak * 60 * 1000);
+      intervalController.longIntervalHandler.setDuration(longBreak * 60 * 1000);
     };
 
     return {
