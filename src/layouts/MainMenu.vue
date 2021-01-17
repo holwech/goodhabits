@@ -61,24 +61,7 @@
         >
           <hr>
           <div class="timepicker-container">
-            Time until next long break
-            <div class="timepicker-input-wrapper">
-              <input
-                class="timepicker-input"
-                type="text"
-                :value="Math.floor(longTimerCountdown / 60000)"
-                disabled
-                size="2"
-              > :
-              <input
-                class="timepicker-input"
-                type="text"
-                :value="Math.floor(longTimerCountdown / 1000) % 60"
-                disabled
-                size="2"
-              >
-            </div>
-            Time until next short break
+            Time until next break
             <div class="timepicker-input-wrapper">
               <input
                 class="timepicker-input"
@@ -91,23 +74,6 @@
                 class="timepicker-input"
                 type="text"
                 :value="Math.floor(shortTimerCountdown / 1000) % 60"
-                disabled
-                size="2"
-              >
-            </div>
-            Remaining long break time
-            <div class="timepicker-input-wrapper">
-              <input
-                class="timepicker-input"
-                type="text"
-                :value="Math.floor(breakTimerCountdown / 60000)"
-                disabled
-                size="2"
-              > :
-              <input
-                class="timepicker-input"
-                type="text"
-                :value="Math.floor(breakTimerCountdown / 1000) % 60"
                 disabled
                 size="2"
               >
@@ -136,7 +102,7 @@ import TimePicker from '@/components/TimePicker.vue';
 import { chickResponses } from '@/models/Resource';
 import { countdownInterval } from '@/utils/utils';
 import IntervalController, { IntervalSignal } from '@/utils/IntervalController';
-import { WorkHours } from '@/utils/TimeHandler';
+import { TimeHandler, WorkHours } from '@/utils/TimeHandler';
 const notificationSound = require('../assets/notification-sound.mp3');
 
 const defaultTimes = {
@@ -146,9 +112,7 @@ const defaultTimes = {
     endHour: 17,
     endMin: 0
   },
-  shortIntervalDuration: 15 * 60 * 1000,
-  longIntervalDuration:  60 * 60 * 1000,
-  longBreakDuration: 10 * 60 * 1000,
+  shortIntervalDuration: 20 * 60 * 1000,
   breakReminderDuration: 2 * 60 * 1000,
 };
 
@@ -172,71 +136,25 @@ export default defineComponent({
       audio.play();
     };
 
-    let onSignal = (signal: IntervalSignal) => {
-      console.log(signal)
-      switch (signal) {
-        case IntervalSignal.SHORT_INTERVAL_END:
-          notify.notify('Time for a short break', 'Take a few seconds to look away from the screen and shake your legs', 0.5 * 60 * 1000);
-          playSound();
-          break;
-        case IntervalSignal.LONG_INTERVAL_END:
-          notify.notify('Time for a long break', 'Click on the \"Start break\" button to start your break', 0.5 * 60 * 1000);
-          showBreakButton.value = true;
-          playSound();
-          break;
-        case IntervalSignal.BREAK_NO_ACK:
-          notify.notify('Time for a long break', 'Click on the \"Start break\" button to start your break', 0.5 * 60 * 1000);
-          playSound();
-          break;
-        case IntervalSignal.BREAK_NO_ACK_LIMIT_REACHED:
-          notify.notify('Skipping long break', 'You seem to be busy, I will skip this break for now', 1 * 60 * 1000);
-          playSound();
-          break;
-        case IntervalSignal.BREAK_START:
-          notify.notify(
-            'Long break started',
-            `Your break has started and will last for ${defaultTimes.longBreakDuration / 60000} minutes`,
-            1 * 60 * 1000
-          );
-          playSound();
-          break;
-        case IntervalSignal.BREAK_END:
-          notify.notify(
-            'Long break ended',
-            'Time to get back to work',
-            1 * 60 * 1000
-          );
-          playSound();
-          break;
-        default:
-          break;
-      }
-    };
-
-    let intervalController = new IntervalController(
-      defaultTimes.shortIntervalDuration,
-      defaultTimes.longIntervalDuration,
-      defaultTimes.longBreakDuration,
-      defaultTimes.breakReminderDuration,
-      onSignal
-    );
-
-    intervalController.shortIntervalHandler.attachTimeCounter((remainingTime) => shortTimerCountdown.value = remainingTime);
-    intervalController.longIntervalHandler.attachTimeCounter((remainingTime) => longTimerCountdown.value = remainingTime);
-    intervalController.breakTimer.attachTimeCounter((remainingTime) => breakTimerCountdown.value = remainingTime);
-
-    onMounted(() => intervalController.start());
-
-    let startBreak = () => {
-      showBreakButton.value = false;
-      intervalController.startBreak();
+    let onTimeout = () => {
+      console.log('hello')
+      notify.notify('Time for a short break', 'Take a few seconds to look away from the screen and shake your legs', 0.5 * 60 * 1000);
+      playSound();
     }
 
+    let timer = new TimeHandler(
+      defaultTimes.shortIntervalDuration,
+      onTimeout.bind(this)
+    )
+
+    timer.attachTimeCounter((remainingTime) => shortTimerCountdown.value = remainingTime);
+
+    onMounted(() => timer.start());
+
     let updateLimits = (limits: string[]) => {
-      let [startHour, startMin, endHour, endMin, longBreak, shortBreak] = limits.map((val) => parseInt(val));
-      intervalController.setLimitTime({ startHour, startMin, endHour, endMin });
-      intervalController.shortIntervalHandler.setDuration(shortBreak * 60 * 1000);
-      intervalController.longIntervalHandler.setDuration(longBreak * 60 * 1000);
+      let [startHour, startMin, endHour, endMin, shortBreak] = limits.map((val) => parseInt(val));
+      timer.setWorkHours({ startHour, startMin, endHour, endMin });
+      timer.setDuration(shortBreak * 60 * 1000);
     };
 
     return {
@@ -247,7 +165,6 @@ export default defineComponent({
       breakTimerCountdown,
       playSound,
       showBreakButton,
-      startBreak
     };
   }
 });

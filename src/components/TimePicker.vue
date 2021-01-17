@@ -50,20 +50,7 @@
         size="1"
       >
     </div>
-    Remind me to take a long break every
-    <div class="timepicker-input-wrapper">
-      <input
-        v-model="longBreak"
-        class="timepicker-input"
-        type="number"
-        name="Minute"
-        min="0"
-        size="1"
-        value="45"
-        disabled
-      > minutes
-    </div>
-    Remind me to take a short break every
+    Remind me to take a break every
     <div class="timepicker-input-wrapper">
       <input
         v-model="shortBreak"
@@ -89,19 +76,17 @@ export default defineComponent({
     let startMin = ref('00');
     let endHour = ref('17');
     let endMin = ref('00');
-    let longBreak = ref('60');
-    let shortBreak = ref('15');
+    let shortBreak = ref('20');
 
     emit('input', [
       startHour.value,
       startMin.value,
       endHour.value,
       endMin.value,
-      longBreak.value,
       shortBreak.value
     ]);
 
-    let test = watch([startHour, startMin, endHour, endMin, longBreak, shortBreak], (curr, prev) => {
+    let test = watch([startHour, startMin, endHour, endMin, shortBreak], (curr, prev) => {
       emit('input', curr);
     });
 
@@ -110,7 +95,6 @@ export default defineComponent({
       startMin,
       endHour,
       endMin,
-      longBreak,
       shortBreak
     };
   }
